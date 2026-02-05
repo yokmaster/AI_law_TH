@@ -610,9 +610,9 @@ const STAGES = [
 
 const MATRIX = {
   governance: {
-    1: { title: "Governance Setup & Context Mapping", items: ["จัดตั้งโครงสร้าง AI Governance (บทบาท ความรับผิดชอบ)","GOVERN: กำหนดนโยบาย AI ขององค์กร, risk appetite","MAP: กำหนด context, ระบุ stakeholders, intended use","ประเมิน risk category เบื้องต้น (ตาม Thailand AI Guidelines)","กำหนด ethical guardrails: ความเป็นธรรม, โปร่งใส, อธิบายได้"] },
-    2: { title: "Data Risk Mapping", items: ["MAP: ระบุ data requirements, แหล่งข้อมูล, ข้อจำกัด","วิเคราะห์ bias risks จากข้อมูล (demographic, selection, measurement bias)","กำหนด data quality standards & documentation","ประเมิน representativeness ของข้อมูลสำหรับประชากรเป้าหมาย"] },
-    3: { title: "Measurement Framework", items: ["MEASURE: กำหนด performance metrics, fairness criteria","ออกแบบ bias testing protocol (across subgroups)","กำหนด explainability requirements ตามระดับความเสี่ยง","Document model architecture decisions & rationale"] },
+    1: { title: "Governance Setup & Context Mapping", items: ["จัดตั้งโครงสร้าง AI Governance (บทบาท ความรับผิดชอบ) e.g. AI Board","GOVERN: กำหนดนโยบาย AI ขององค์กร & risk appetite","MAP: กำหนด context, ระบุ stakeholders, intended use","ประเมิน risk category เบื้องต้น (ตาม Thailand AI Guidelines/Any Ethical Guidelines (NIST, UNESCO, OECD, EU))","กำหนด ethical guardrails: ความเป็นธรรม, โปร่งใส, อธิบายได้"] },
+    2: { title: "Data Risk Mapping", items: ["MAP: ระบุ data requirements, แหล่งข้อมูล, ข้อจำกัด","วิเคราะห์ risks จากข้อมูล เช่น bias (demographic, selection, measurement bias) โดยอาจพิจารณาจากการประเมิน representativeness ของข้อมูลสำหรับประชากรเป้าหมาย","กำหนด data quality standards & documentation"] },
+    3: { title: "Measurement Framework", items: ["MEASURE: กำหนด performance metrics ในด้านต่าง ๆ เช่น fairness criteria, hallucination rate, explanability metrics","ออกแบบ risk testing protocol (e.g. bias across subgroups)","กำหนด requirements ตามระดับความเสี่ยง เช่น explanability level across risk levels","Document model architecture decisions & rationale"] },
     4: { title: "Performance Evaluation", items: ["MEASURE: ประเมินประสิทธิภาพ, red-teaming, stress testing","ทดสอบ fairness across demographic groups","ประเมิน robustness & edge cases","Independent validation & third-party audit (ถ้าจำเป็น)"] },
     5: { title: "Accountability Documentation", items: ["GOVERN: จัดทำเอกสาร accountability & transparency","MANAGE: จัดทำ risk treatment plans","AI impact assessment report","จัดทำ model card / system documentation"] },
     6: { title: "Deployment Governance", items: ["MANAGE: กำหนด human oversight mechanisms","กำหนด human-in-the-loop vs. human-on-the-loop","ออกแบบ override & escalation procedures","ฝึกอบรมผู้ใช้งาน (clinicians) เรื่อง AI limitations"] },
@@ -696,7 +696,6 @@ function App() {
         <div className="subtitle">กรอบกฎหมายและธรรมาภิบาลสำหรับการใช้ AI ทางการแพทย์</div>
         <div className="author">ผศ. ดร. พีรพัฒ โชคสุวัฒนสกุล</div>
         <div className="affiliation">คณะนิติศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย | Chula.AI Centre</div>
-        <div className="affiliation">peerapat.ch@chula.ac.th</div>
       </div>
 
       {/* NIST Bar */}
