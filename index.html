@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Medical AI Governance & Compliance Lifecycle Framework</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --border: #e2e5ea;
+    --text-primary: #1a1d23;
+    --text-secondary: #5a5f6b;
+    --text-muted: #8b919d;
+    --governance: #1e3a5f;
+    --governance-light: #e8eef5;
+    --data: #5b2c6f;
+    --data-light: #f0e6f6;
+    --device: #0e6655;
+    --device-light: #e5f5f0;
+    --liability: #922b21;
+    --liability-light: #f9e8e6;
+    --security: #1a5276;
+    --security-light: #e4eef6;
+    --nist-govern: #1565C0;
+    --nist-map: #2E7D32;
+    --nist-measure: #E65100;
+    --nist-manage: #AD1457;
+    --radius: 10px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  body {
+    font-family: 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+    position: relative;
+  }
+  .header::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--nist-govern), var(--nist-manage));
+    margin: 16px auto 0;
+    border-radius: 2px;
+  }
+  .header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.3;
+    color: var(--text-primary);
+  }
+  .header .subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-weight: 400;
+  }
+  .header .author {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-top: 14px;
+  }
+  .header .affiliation {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    font-weight: 400;
+  }
+
+  /* ── NIST Bar ── */
+  .nist-bar {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+  }
+  .nist-bar .label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .nist-functions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .nist-fn {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border-left: 4px solid;
+    transition: transform var(--transition);
+  }
+  .nist-fn:hover { transform: translateY(-1px); }
+  .nist-fn .fn-name {
+    font-weight: 700;
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .nist-fn .fn-desc {
+    font-size: 11px;
+    color: var(--text-secondary);
+    margin-top: 3px;
+    line-height: 1.4;
+  }
+
+  .lifecycle-mapping {
+    display: flex;
+    align-items: center;
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 8px;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .lifecycle-mapping .lm-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-right: 6px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .stage-chip {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .lifecycle-mapping .arrow {
+    color: #ccc;
+    font-size: 10px;
+    margin: 0 1px;
+  }
+
+  /* ── View Toggle ── */
+  .view-toggle {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .view-btn {
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    font-family: inherit;
+  }
+  .view-btn:hover { border-color: var(--text-muted); }
+  .view-btn.active {
+    background: var(--text-primary);
+    color: white;
+    border-color: var(--text-primary);
+  }
+
+  /* ── Lifecycle Stages Header ── */
+  .stages-header {
+    display: flex;
+    padding-left: 152px;
+    gap: 2px;
+    margin-bottom: 2px;
+  }
+  .stage-col {
+    flex: 1;
+    text-align: center;
+    padding: 10px 4px 8px;
+    position: relative;
+    border-bottom: 3px solid;
+    transition: background var(--transition);
+  }
+  .stage-col:first-child { border-radius: 8px 0 0 0; }
+  .stage-col:last-child { border-radius: 0 8px 0 0; }
+  .stage-num {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+  }
+  .stage-name {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.25;
+    margin-top: 3px;
+    white-space: pre-line;
+  }
+  .stage-arrow {
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #bbb;
+    z-index: 2;
+  }
+
+  /* ── Matrix Grid ── */
+  .matrix-grid {
+    background: var(--surface);
+    border-radius: 0 0 var(--radius) var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .matrix-row {
+    display: flex;
+    border-bottom: 1px solid #eee;
+  }
+  .matrix-row:last-child { border-bottom: none; }
+  .layer-label {
+    width: 150px;
+    min-width: 150px;
+    padding: 14px 12px;
+    border-right: 3px solid;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    transition: background var(--transition);
+  }
+  .layer-icon { font-size: 18px; }
+  .layer-name {
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+  .matrix-cell {
+    flex: 1;
+    padding: 10px 6px;
+    border-right: 1px solid #f0f0f0;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 64px;
+    transition: background var(--transition);
+    position: relative;
+  }
+  .matrix-cell:last-child { border-right: none; }
+  .matrix-cell:hover { background: rgba(0,0,0,0.02); }
+  .matrix-cell.selected { background: rgba(0,0,0,0.04); }
+  .intensity-dots {
+    display: flex;
+    gap: 3px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    transition: transform var(--transition);
+  }
+  .matrix-cell:hover .dot { transform: scale(1.2); }
+  .cell-count {
+    font-size: 9px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── Legend ── */
+  .legend {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 10px;
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ── Detail Panel ── */
+  .detail-panel {
+    margin-top: 20px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    animation: slideUp 0.3s ease;
+  }
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .detail-header {
+    padding: 14px 20px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .detail-breadcrumb {
+    font-size: 11px;
+    opacity: 0.8;
+  }
+  .detail-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 2px;
+  }
+  .detail-close {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    padding: 5px 12px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background var(--transition);
+    font-family: inherit;
+  }
+  .detail-close:hover { background: rgba(255,255,255,0.35); }
+  .detail-body { padding: 20px; }
+  .detail-item {
+    display: flex;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f5f5;
+    align-items: flex-start;
+  }
+  .detail-item:last-child { border-bottom: none; }
+  .detail-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .detail-text {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.6;
+  }
+
+  /* ── Layer View ── */
+  .layer-selector {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  .layer-btn {
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+  }
+  .layer-btn:hover { border-color: var(--text-muted); }
+  .layer-btn.active { border-width: 2px; }
+
+  .layer-detail {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+  }
+  .layer-detail-header {
+    padding: 20px 24px;
+    color: white;
+  }
+  .layer-detail-title {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .layer-sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .source-chip {
+    background: rgba(255,255,255,0.2);
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .timeline { padding: 20px 24px; }
+  .timeline-item {
+    display: flex;
+    margin-bottom: 20px;
+    gap: 18px;
+  }
+  .timeline-indicator {
+    width: 86px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .timeline-circle {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .timeline-stage-name {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 4px;
+    font-weight: 600;
+  }
+  .timeline-nist {
+    font-size: 9px;
+    font-weight: 700;
+    margin-top: 2px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .timeline-line {
+    width: 2px;
+    height: 16px;
+    background: #e0e0e0;
+    margin-top: 6px;
+  }
+  .timeline-content {
+    flex: 1;
+    border-radius: 10px;
+    padding: 14px 18px;
+    border-left: 3px solid;
+  }
+  .timeline-content-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .timeline-content-item {
+    font-size: 12px;
+    color: var(--text-secondary);
+    padding: 4px 0 4px 14px;
+    position: relative;
+    line-height: 1.55;
+  }
+  .timeline-content-item::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px;
+    color: var(--text-muted);
+    font-size: 15px;
+  }
+
+  /* ── Key Insights ── */
+  .insights {
+    margin-top: 28px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .insights-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 14px;
+  }
+  .insight-card {
+    display: flex;
+    gap: 12px;
+    padding: 12px 14px;
+    background: var(--bg);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: transform var(--transition);
+  }
+  .insight-card:last-child { margin-bottom: 0; }
+  .insight-card:hover { transform: translateX(2px); }
+  .insight-emoji { font-size: 22px; flex-shrink: 0; }
+  .insight-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .insight-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    line-height: 1.5;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 28px;
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    padding: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .footer .copyright {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    font-family: 'IBM Plex Sans Thai', sans-serif;
+    font-weight: 500;
+  }
+
+  /* ── Print ── */
+  @media print {
+    body { background: white; }
+    .view-toggle, .detail-close { display: none; }
+    .container { padding: 16px; }
+    .matrix-cell { cursor: default; }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .stages-header { padding-left: 100px; }
+    .layer-label { width: 100px; min-width: 100px; }
+    .stage-name { font-size: 9px; }
+    .nist-functions { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container" id="app"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+
+<script type="text/babel">
+const { useState } = React;
+
+const LAYERS = [
+  { id: "governance", name: "AI Governance & Risk Management", shortName: "AI Governance", icon: "🏛️", color: "#1e3a5f", lightColor: "#e8eef5", sources: ["NIST AI RMF 1.0", "Thailand AI Ethics Guidelines 1.0"] },
+  { id: "data", name: "Data Protection & Privacy", shortName: "Data Protection", icon: "🔒", color: "#5b2c6f", lightColor: "#f0e6f6", sources: ["PDPA พ.ร.บ.คุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562"] },
+  { id: "device", name: "Medical Device Regulation", shortName: "Med Device", icon: "🏥", color: "#0e6655", lightColor: "#e5f5f0", sources: ["พ.ร.บ.เครื่องมือแพทย์ พ.ศ. 2551", "ประกาศ อย. เรื่อง SaMD", "ISO 13485 / IEC 62304"] },
+  { id: "liability", name: "Medical Liability & Professional Ethics", shortName: "Med Liability", icon: "⚖️", color: "#922b21", lightColor: "#f9e8e6", sources: ["ข้อบังคับแพทยสภา", "ป.พ.พ. (ละเมิด/สัญญา)", "พ.ร.บ.สถานพยาบาล", "จริยธรรมการวิจัยในมนุษย์"] },
+  { id: "security", name: "Digital Infrastructure & Security", shortName: "Digital Security", icon: "🛡️", color: "#1a5276", lightColor: "#e4eef6", sources: ["พ.ร.บ.การรักษาความมั่นคงปลอดภัยไซเบอร์ พ.ศ. 2562", "พ.ร.บ.ธุรกรรมทางอิเล็กทรอนิกส์"] },
+];
+
+const STAGES = [
+  { id: 1, name: "Problem Definition\n& Use Case Design", shortName: "Design", nistFunction: "GOVERN + MAP", nistColor: "#2196F3" },
+  { id: 2, name: "Data Collection\n& Preparation", shortName: "Data", nistFunction: "MAP", nistColor: "#4CAF50" },
+  { id: 3, name: "Model Development\n& Training", shortName: "Develop", nistFunction: "MAP + MEASURE", nistColor: "#FF9800" },
+  { id: 4, name: "Validation &\nClinical Testing", shortName: "Validate", nistFunction: "MEASURE", nistColor: "#FF9800" },
+  { id: 5, name: "Regulatory Approval\n& Certification", shortName: "Approve", nistFunction: "GOVERN + MANAGE", nistColor: "#9C27B0" },
+  { id: 6, name: "Clinical Deployment\n& Integration", shortName: "Deploy", nistFunction: "MANAGE", nistColor: "#F44336" },
+  { id: 7, name: "Post-Market\nSurveillance", shortName: "Monitor", nistFunction: "MANAGE", nistColor: "#F44336" },
+];
+
+const MATRIX = {
+  governance: {
+    1: { title: "Governance Setup & Context Mapping", items: ["จัดตั้งโครงสร้าง AI Governance (บทบาท ความรับผิดชอบ)","GOVERN: กำหนดนโยบาย AI ขององค์กร, risk appetite","MAP: กำหนด context, ระบุ stakeholders, intended use","ประเมิน risk category เบื้องต้น (ตาม Thailand AI Guidelines)","กำหนด ethical guardrails: ความเป็นธรรม, โปร่งใส, อธิบายได้"] },
+    2: { title: "Data Risk Mapping", items: ["MAP: ระบุ data requirements, แหล่งข้อมูล, ข้อจำกัด","วิเคราะห์ bias risks จากข้อมูล (demographic, selection, measurement bias)","กำหนด data quality standards & documentation","ประเมิน representativeness ของข้อมูลสำหรับประชากรเป้าหมาย"] },
+    3: { title: "Measurement Framework", items: ["MEASURE: กำหนด performance metrics, fairness criteria","ออกแบบ bias testing protocol (across subgroups)","กำหนด explainability requirements ตามระดับความเสี่ยง","Document model architecture decisions & rationale"] },
+    4: { title: "Performance Evaluation", items: ["MEASURE: ประเมินประสิทธิภาพ, red-teaming, stress testing","ทดสอบ fairness across demographic groups","ประเมิน robustness & edge cases","Independent validation & third-party audit (ถ้าจำเป็น)"] },
+    5: { title: "Accountability Documentation", items: ["GOVERN: จัดทำเอกสาร accountability & transparency","MANAGE: จัดทำ risk treatment plans","AI impact assessment report","จัดทำ model card / system documentation"] },
+    6: { title: "Deployment Governance", items: ["MANAGE: กำหนด human oversight mechanisms","กำหนด human-in-the-loop vs. human-on-the-loop","ออกแบบ override & escalation procedures","ฝึกอบรมผู้ใช้งาน (clinicians) เรื่อง AI limitations"] },
+    7: { title: "Continuous Monitoring & Response", items: ["MANAGE: continuous performance monitoring","ตรวจสอบ model drift & data drift","Incident response plan & reporting","ทบทวน governance framework เป็นระยะ","Feedback loop จาก clinicians กลับสู่ development"] },
+  },
+  data: {
+    1: { title: "Lawful Basis Planning", items: ["กำหนดฐานทางกฎหมายในการประมวลผล (ม.24, ม.26)","ข้อมูลสุขภาพ = ข้อมูลอ่อนไหว → ต้องใช้ฐาน ม.26","ฐานที่ใช้ได้: ความยินยอมชัดแจ้ง / วิจัย / ประโยชน์สาธารณะด้านสาธารณสุข","เริ่มวางแผน DPIA (Data Protection Impact Assessment)"] },
+    2: { title: "PDPA Compliance in Data Pipeline", items: ["ดำเนินการตาม DPIA อย่างเต็มรูปแบบ","จัดการ consent management / บันทึกฐานกฎหมาย","Purpose limitation: ใช้เฉพาะตามวัตถุประสงค์ที่แจ้ง","Data minimization: เก็บเท่าที่จำเป็น","แจ้ง Privacy Notice แก่เจ้าของข้อมูล","De-identification / Pseudonymization ที่เหมาะสม","บันทึกรายการประมวลผล (Record of Processing Activities)"] },
+    3: { title: "Processing Safeguards", items: ["ตรวจสอบว่าการประมวลผลอยู่ในขอบเขตที่แจ้งไว้","จัดให้มีมาตรการรักษาความปลอดภัยที่เหมาะสม (ม.37)","พิจารณา automated decision-making provisions","Cross-border data transfer safeguards (ม.28-29) ถ้าใช้ cloud ต่างประเทศ"] },
+    4: { title: "Test Data Compliance", items: ["ตรวจสอบฐานกฎหมายสำหรับ test data","Anonymization ที่เพียงพอสำหรับ external validation","แยกสิทธิการเข้าถึงข้อมูลจริง vs. test data"] },
+    5: { title: "Documentation for Compliance", items: ["จัดทำเอกสาร PDPA compliance สำหรับ regulatory submission","บันทึกฐานกฎหมาย, DPIA results, มาตรการรักษาความปลอดภัย"] },
+    6: { title: "Operational Privacy", items: ["ปฏิบัติตามหน้าที่ transparency (แจ้งผู้ป่วยว่าใช้ AI)","รองรับสิทธิเจ้าของข้อมูล: เข้าถึง, แก้ไข, ลบ, คัดค้าน","ไม่ใช้ข้อมูลผู้ป่วยเพื่อ re-train โดยไม่มีฐานกฎหมาย","Privacy by design ใน clinical workflow"] },
+    7: { title: "Ongoing Data Governance", items: ["ทบทวน DPIA เป็นระยะ (เมื่อมีการเปลี่ยนแปลง)","Data retention & deletion policy","แผนแจ้งเหตุละเมิดข้อมูล (Data Breach Notification ม.37(4))","ตรวจสอบว่าฐานกฎหมายยังคงใช้ได้ (เช่น ความยินยอมถูกถอน?)"] },
+  },
+  device: {
+    1: { title: "SaMD Classification", items: ["ประเมินว่า software เข้าข่าย SaMD หรือไม่","จำแนกประเภทตาม IMDRF risk framework","State of healthcare condition × Significance of information","กำหนด intended use & indications for use","วางแผน regulatory pathway (แจ้งรายการ/ขึ้นทะเบียน)"] },
+    2: { title: "Data for Regulatory Purposes", items: ["กำหนด data quality requirements ตามมาตรฐาน regulatory","วางแผน clinical evidence strategy","Traceability ของ training data"] },
+    3: { title: "Software Development Lifecycle", items: ["ปฏิบัติตาม IEC 62304 (Software lifecycle processes)","Design controls & design history file","Software verification & documentation","Configuration management"] },
+    4: { title: "Clinical Evidence Generation", items: ["Analytical validation (technical performance)","Clinical validation (clinical performance)","จัดทำ clinical evidence ตามที่ อย. กำหนด","Comparison with predicate device / clinical standard"] },
+    5: { title: "Thai FDA Registration", items: ["ยื่นขอ แจ้งรายการ/ขึ้นทะเบียน ต่อ อย.","จัดทำ Technical Documentation","QMS certification (ISO 13485)","Labeling & Instructions for Use ภาษาไทย","Conformity assessment"] },
+    6: { title: "Compliant Deployment", items: ["ปฏิบัติตามเงื่อนไขการขึ้นทะเบียน","Labeling requirements ในสถานพยาบาล","Version control & change management","Installation Qualification (IQ) / Operational Qualification (OQ)"] },
+    7: { title: "Post-Market Obligations", items: ["รายงานเหตุการณ์ไม่พึงประสงค์ต่อ อย.","Post-market clinical follow-up","Model update → re-assessment (Predetermined Change Control Plan)","ต่ออายุใบอนุญาต / ทบทวน classification","PCCP: แผนควบคุมการเปลี่ยนแปลงที่กำหนดล่วงหน้า"] },
+  },
+  liability: {
+    1: { title: "Clinical Need & Ethics", items: ["ประเมิน clinical need & unmet medical need","พิจารณา ethical implications ของ use case","ขอ IRB / Ethics Committee อนุมัติ (ถ้าเป็นงานวิจัย)","พิจารณา equity & access implications"] },
+    2: { title: "Research Ethics", items: ["ขออนุมัติ IRB สำหรับการใช้ข้อมูลผู้ป่วย","Consent สำหรับ secondary use of data","พิจารณา waiver of consent (retrospective data)","ปฏิบัติตามหลักจริยธรรมการวิจัย (Declaration of Helsinki)"] },
+    3: { title: "Clinical Input", items: ["Clinical expert involvement ใน model development","ตรวจสอบ clinical validity ของ model output","กำหนด clinical workflow integration points"] },
+    4: { title: "Clinical Trial Governance", items: ["ปฏิบัติตามกฎหมายการวิจัยทางคลินิก (ถ้าเป็น clinical trial)","IRB oversight ตลอดการทดสอบ","Subject safety monitoring"] },
+    5: { title: "Liability Framework", items: ["กำหนดกรอบความรับผิด: ผู้พัฒนา vs. สถานพยาบาล vs. แพทย์","ทบทวน professional indemnity insurance","จัดทำ contractual liability allocation"] },
+    6: { title: "Clinical Practice Integration", items: ["Informed Consent: แจ้งผู้ป่วยว่าใช้ AI ช่วยวินิจฉัย/รักษา","Standard of care: AI เปลี่ยน standard of care หรือไม่?","แพทย์ยังคงเป็นผู้ตัดสินใจสุดท้าย (clinical judgment)","บันทึกการใช้ AI ในเวชระเบียน","กำหนดขั้นตอนเมื่อ AI output ขัดแย้งกับ clinical judgment","ข้อบังคับแพทยสภา: มาตรฐานวิชาชีพ"] },
+    7: { title: "Ongoing Liability Management", items: ["ระบบรายงาน adverse events & near misses","ทบทวน standard of care เมื่อ AI performance เปลี่ยน","จัดการ malpractice claims ที่เกี่ยวกับ AI","Continuing medical education เรื่อง AI updates"] },
+  },
+  security: {
+    1: { title: "Architecture Planning", items: ["วางแผน system architecture & security requirements","ประเมินว่าเข้าข่าย CII (Critical Information Infrastructure) หรือไม่","กำหนด data flow & integration points"] },
+    2: { title: "Data Security", items: ["Encryption at rest & in transit","Access control & authentication สำหรับ data access","Secure data storage & backup","Audit trail สำหรับ data access"] },
+    3: { title: "Development Security", items: ["Secure development environment","Code review & security testing","Version control & access management"] },
+    4: { title: "Testing Security", items: ["Penetration testing & vulnerability assessment","Security testing ของ model endpoints","Adversarial robustness testing"] },
+    5: { title: "Security Certification", items: ["Security assessment documentation","ปฏิบัติตามมาตรฐานความปลอดภัยที่ อย. กำหนด","Incident response plan"] },
+    6: { title: "Operational Security", items: ["ปฏิบัติตาม พ.ร.บ.ไซเบอร์ (ถ้าเป็น CII)","Integration security กับ HIS/EMR","Authentication & authorization สำหรับ clinical users","Audit logging ของการใช้งาน AI","ปฏิบัติตาม พ.ร.บ.ธุรกรรมทางอิเล็กทรอนิกส์ (e-signature, e-records)"] },
+    7: { title: "Continuous Security", items: ["Continuous security monitoring","Vulnerability management & patching","แจ้งเหตุภัยคุกคามทางไซเบอร์ (ตาม พ.ร.บ.ไซเบอร์)","Periodic security audit & penetration testing"] },
+  },
+};
+
+const NIST_FUNCTIONS = [
+  { name: "GOVERN", color: "#1565C0", desc: "Culture, Governance Structure, Policies — Cross-cutting ทุก stage" },
+  { name: "MAP", color: "#2E7D32", desc: "Context, Risk Identification, Stakeholder Analysis" },
+  { name: "MEASURE", color: "#E65100", desc: "Assessment, Metrics, Bias Testing, Validation" },
+  { name: "MANAGE", color: "#AD1457", desc: "Monitoring, Response, Deployment Controls" },
+];
+
+const INSIGHTS = [
+  { emoji: "🔄", title: "NIST AI RMF เป็น backbone", desc: "GOVERN ทำหน้าที่ cross-cutting ทุก stage ขณะที่ MAP → MEASURE → MANAGE ไหลไปตาม lifecycle" },
+  { emoji: "⚖️", title: "Liability Gap ที่แพทย์ต้องรู้", desc: "เมื่อ AI ช่วยวินิจฉัย ใครรับผิด? แพทย์ยังต้องใช้ clinical judgment — AI เป็น \"เครื่องมือ\" ไม่ใช่ \"ผู้ตัดสินใจ\"" },
+  { emoji: "🔒", title: "PDPA หนักที่ Data Collection", desc: "ข้อมูลสุขภาพเป็นข้อมูลอ่อนไหว ต้องใช้ฐาน ม.26 ซึ่งเข้มกว่าข้อมูลทั่วไป (ม.24) มาก" },
+  { emoji: "🏥", title: "SaMD ≠ ทุก Health AI", desc: "ต้องประเมินก่อนว่า software เข้าข่าย SaMD หรือไม่ — clinical decision support บางประเภทอาจไม่เข้าข่าย" },
+  { emoji: "📊", title: "Post-Market เป็น stage ที่ซับซ้อนที่สุด", desc: "ต้อง monitor ทั้ง model drift, adverse events, data retention, security — ทุก layer มีภาระหน้าที่" },
+];
+
+function App() {
+  const [selectedCell, setSelectedCell] = useState(null);
+  const [selectedLayer, setSelectedLayer] = useState(null);
+  const [view, setView] = useState("matrix");
+
+  const handleCellClick = (layerId, stageId) => {
+    const key = `${layerId}-${stageId}`;
+    setSelectedCell(selectedCell === key ? null : key);
+  };
+
+  const getIntensity = (layerId, stageId) => {
+    const items = MATRIX[layerId]?.[stageId]?.items || [];
+    if (items.length >= 5) return 3;
+    if (items.length >= 3) return 2;
+    return 1;
+  };
+
+  return (
+    <React.Fragment>
+      {/* Header */}
+      <div className="header">
+        <h1>Medical AI Governance & Compliance<br/>Lifecycle Framework</h1>
+        <div className="subtitle">กรอบกฎหมายและธรรมาภิบาลสำหรับการใช้ AI ทางการแพทย์</div>
+        <div className="author">ผศ. ดร. พีรพัฒ โชคสุวัฒนสกุล</div>
+        <div className="affiliation">คณะนิติศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย | Chula.AI Centre</div>
+      </div>
+
+      {/* NIST Bar */}
+      <div className="nist-bar">
+        <div className="label">NIST AI RMF 1.0 Core Functions</div>
+        <div className="nist-functions">
+          {NIST_FUNCTIONS.map(fn => (
+            <div key={fn.name} className="nist-fn" style={{ borderLeftColor: fn.color, background: fn.color + '10' }}>
+              <div className="fn-name" style={{ color: fn.color }}>{fn.name}</div>
+              <div className="fn-desc">{fn.desc}</div>
+            </div>
+          ))}
+        </div>
+        <div className="lifecycle-mapping">
+          <span className="lm-label">Lifecycle →</span>
+          {STAGES.map((s, i) => (
+            <React.Fragment key={s.id}>
+              <span className="stage-chip" style={{ background: s.nistColor + '18', color: s.nistColor }}>
+                S{s.id}: {s.nistFunction}
+              </span>
+              {i < STAGES.length - 1 && <span className="arrow">→</span>}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+
+      {/* View Toggle */}
+      <div className="view-toggle">
+        <button className={`view-btn ${view === 'matrix' ? 'active' : ''}`} onClick={() => { setView('matrix'); setSelectedCell(null); setSelectedLayer(null); }}>
+          📊 Matrix View
+        </button>
+        <button className={`view-btn ${view === 'layers' ? 'active' : ''}`} onClick={() => { setView('layers'); setSelectedCell(null); setSelectedLayer(null); }}>
+          📋 Layer Detail View
+        </button>
+      </div>
+
+      {/* Matrix View */}
+      {view === 'matrix' && (
+        <React.Fragment>
+          <div className="stages-header">
+            {STAGES.map((stage, i) => (
+              <div key={stage.id} className="stage-col" style={{
+                background: `linear-gradient(135deg, ${stage.nistColor}15, ${stage.nistColor}05)`,
+                borderBottomColor: stage.nistColor,
+                borderRadius: i === 0 ? '8px 0 0 0' : i === STAGES.length - 1 ? '0 8px 0 0' : 0
+              }}>
+                <div className="stage-num" style={{ color: stage.nistColor }}>Stage {stage.id}</div>
+                <div className="stage-name">{stage.name}</div>
+                {i < STAGES.length - 1 && <span className="stage-arrow">›</span>}
+              </div>
+            ))}
+          </div>
+
+          <div className="matrix-grid">
+            {LAYERS.map(layer => (
+              <div key={layer.id} className="matrix-row">
+                <div className="layer-label" style={{ background: layer.lightColor, borderRightColor: layer.color }}>
+                  <span className="layer-icon">{layer.icon}</span>
+                  <span className="layer-name" style={{ color: layer.color }}>{layer.shortName}</span>
+                </div>
+                {STAGES.map(stage => {
+                  const cellKey = `${layer.id}-${stage.id}`;
+                  const isSelected = selectedCell === cellKey;
+                  const dots = getIntensity(layer.id, stage.id);
+                  const data = MATRIX[layer.id]?.[stage.id];
+                  const opacity = dots === 3 ? 'cc' : dots === 2 ? '88' : '44';
+                  return (
+                    <div key={cellKey} className={`matrix-cell ${isSelected ? 'selected' : ''}`}
+                      onClick={() => handleCellClick(layer.id, stage.id)}
+                      style={isSelected ? { background: layer.color + '12' } : {}}>
+                      <div className="intensity-dots">
+                        {Array.from({ length: dots }).map((_, i) => (
+                          <div key={i} className="dot" style={{ background: layer.color + opacity }} />
+                        ))}
+                      </div>
+                      <span className="cell-count">{data?.items?.length || 0} items</span>
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+
+          <div className="legend">
+            <span>● Low (1-2)</span>
+            <span>●● Medium (3-4)</span>
+            <span>●●● High (5+)</span>
+            <span style={{ fontStyle: 'italic' }}>Click any cell for details</span>
+          </div>
+
+          {selectedCell && (() => {
+            const [layerId, stageId] = selectedCell.split('-');
+            const layer = LAYERS.find(l => l.id === layerId);
+            const stage = STAGES.find(s => s.id === parseInt(stageId));
+            const data = MATRIX[layerId]?.[stageId];
+            return (
+              <div className="detail-panel">
+                <div className="detail-header" style={{ background: layer.color }}>
+                  <div>
+                    <div className="detail-breadcrumb">{layer.icon} {layer.name} → Stage {stage.id}: {stage.shortName}</div>
+                    <div className="detail-title">{data?.title}</div>
+                  </div>
+                  <button className="detail-close" onClick={() => setSelectedCell(null)}>✕</button>
+                </div>
+                <div className="detail-body">
+                  {data?.items?.map((item, i) => (
+                    <div key={i} className="detail-item">
+                      <div className="detail-num" style={{ background: layer.color + '15', color: layer.color }}>{i + 1}</div>
+                      <div className="detail-text">{item}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })()}
+        </React.Fragment>
+      )}
+
+      {/* Layer View */}
+      {view === 'layers' && (
+        <React.Fragment>
+          <div className="layer-selector">
+            {LAYERS.map(layer => (
+              <button key={layer.id}
+                className={`layer-btn ${selectedLayer === layer.id ? 'active' : ''}`}
+                onClick={() => setSelectedLayer(selectedLayer === layer.id ? null : layer.id)}
+                style={selectedLayer === layer.id ? { borderColor: layer.color, background: layer.lightColor, color: layer.color } : {}}>
+                {layer.icon} {layer.shortName}
+              </button>
+            ))}
+          </div>
+
+          {selectedLayer ? (() => {
+            const layer = LAYERS.find(l => l.id === selectedLayer);
+            return (
+              <div className="layer-detail">
+                <div className="layer-detail-header" style={{ background: layer.color }}>
+                  <div className="layer-detail-title">{layer.icon} {layer.name}</div>
+                  <div className="layer-sources">
+                    {layer.sources.map((s, i) => <span key={i} className="source-chip">{s}</span>)}
+                  </div>
+                </div>
+                <div className="timeline">
+                  {STAGES.map(stage => {
+                    const data = MATRIX[selectedLayer]?.[stage.id];
+                    return (
+                      <div key={stage.id} className="timeline-item">
+                        <div className="timeline-indicator">
+                          <div className="timeline-circle" style={{ background: stage.nistColor }}>{stage.id}</div>
+                          <div className="timeline-stage-name">{stage.shortName}</div>
+                          <div className="timeline-nist" style={{ color: stage.nistColor }}>{stage.nistFunction}</div>
+                          {stage.id < 7 && <div className="timeline-line" />}
+                        </div>
+                        <div className="timeline-content" style={{ background: layer.lightColor, borderLeftColor: layer.color }}>
+                          <div className="timeline-content-title" style={{ color: layer.color }}>{data?.title}</div>
+                          {data?.items?.map((item, i) => (
+                            <div key={i} className="timeline-content-item" style={{ '--dot-color': layer.color }}>
+                              {item}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })() : (
+            <div className="empty-state">👆 เลือก Layer เพื่อดูรายละเอียดตาม Lifecycle</div>
+          )}
+        </React.Fragment>
+      )}
+
+      <div className="footer">
+        <div>Medical AI Governance & Compliance Lifecycle Framework v1.0</div>
+        <div style={{ marginTop: 4 }}>ผศ. ดร. พีรพัฒ โชคสุวัฒนสกุล — คณะนิติศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย | Chula.AI Centre</div>
+        <div className="copyright">© 2025 พีรพัฒ โชคสุวัฒนสกุล สงวนลิขสิทธิ์ | All Rights Reserved</div>
+      </div>
+    </React.Fragment>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('app')).render(<App />);
+</script>
+</body>
+</html>
